@@ -48,19 +48,16 @@ def AddEmp():
     if emp_image_file.filename == "":
         return "Please select a file"
 
-    try:
 
-        cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location))
-        db_conn.commit()
-        emp_name = "" + first_name + " " + last_name
+
+    cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location))
+    db_conn.commit()
         # Uplaod image file in S3 #
-        emp_image_file_name_in_s3 = "emp-id-" + str(emp_id) + "_image_file"
-        s3 = boto3.resource('s3')
 
 #put here for copied code
 
-    finally:
-        cursor.close()
+
+    cursor.close()
 
     print("all modification done...")
     return render_template('AddEmpOutput.html', name=emp_name)
