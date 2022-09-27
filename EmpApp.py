@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from pymysql import connections
 import os
 
-from sympy import re
+import re
 import boto3
 from config import *
 
@@ -160,4 +160,3 @@ def ApproveLeave():
     cursor.execute(approve_leave,(lestatus,eid))
     db_conn.commit()
     return render_template('ApproveLeave.html',first_name=approve_va)
-
