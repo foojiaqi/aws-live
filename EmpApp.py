@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request
 from pymysql import connections
 import os
-
-from sympy import re
+import re
 import boto3
 from config import *
 
