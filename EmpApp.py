@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 from pymysql import connections
 import os
+
+from sympy import re
 import boto3
 from config import *
 
@@ -83,3 +85,36 @@ def AddEmp():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
+
+@app.route("/updateemp", methods=['POST'])
+def update():
+    emp_id = request.form['emp_id']
+    update_sql = "UPDATE emp_id FROM employee WHERE emp_id(%s)"
+    cursor = db_conn.cursor()
+    cursor.execute(update_sql, (emp_id))
+    emp_id = re.subs('\W+','', str(cursor.fetchall()))
+    first_name = request.form['first_name']
+    update_sql = "UPDATE first_name FROM employee WHERE emp_id(%s)"
+    cursor = db_conn.cursor()
+    cursor.execute(update_sql, (emp_id))
+    first_name = re.subs('\W+','', str(cursor.fetchall()))
+    last_name = request.form['last_name']
+    update_sql = "UPDATE last_name FROM employee WHERE emp_id(%s)"
+    cursor = db_conn.cursor()
+    cursor.execute(update_sql, (emp_id))
+    last_name = re.subs('\W+','', str(cursor.fetchall()))
+    pri_skill = request.form['pri_skill']
+    update_sql = "UPDATE pri_skill FROM employee WHERE emp_id(%s)"
+    cursor = db_conn.cursor()
+    cursor.execute(update_sql, (emp_id))
+    pri_skill = re.subs('\W+','', str(cursor.fetchall()))
+    location = request.form['location']
+    update_sql = "UPDATE update_sql FROM employee WHERE emp_id(%s)"
+    cursor = db_conn.cursor()
+    cursor.execute(update_sql, (emp_id))
+    location = re.subs('\W+','', str(cursor.fetchall()))
+    emp_image_file = re.subs('\W+','', str(cursor.fetchall()))
+    db_conn.commit()
+    cursor.close()
+    return render_template('')
+
