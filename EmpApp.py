@@ -6,7 +6,7 @@ from config import *
 
 app = Flask(__name__)
 
-bucket = custombucket
+bucket = custombucket 
 region = customregion
 
 db_conn = connections.Connection(
@@ -73,7 +73,6 @@ def AddEmp():
         last_name = request.form['last_name']
         pri_skill = request.form['pri_skill']
         location = request.form['location']
-        emp_image_file = request.files['emp_image_file']
         leave_start_date=0000-00-00
         leave_end_date=0000-00-00
         leave_reason='none'
@@ -81,7 +80,8 @@ def AddEmp():
         gender=request.form['gender']        
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
-  
+        emp_image_file = request.files['emp_image_file']        
+
 
         insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s,%s)"
         cursor = db_conn.cursor()
@@ -109,7 +109,7 @@ def AddEmp():
                 else:
                    s3_location = '-' + s3_location
 
-                object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                object_url = "https://s3.console.aws.amazon.com/{1}/{2}".format(
                    s3_location,
                    custombucket,
                    emp_image_file_name_in_s3)
