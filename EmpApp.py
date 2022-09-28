@@ -77,7 +77,7 @@ def AddEmp():
         leave_end_date=0000-00-00
         leave_reason='none'
         leave_status='none'
-        gender='ss'     
+        gender=request.form['gender']        
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
         hourly_wage='0'
