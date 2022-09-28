@@ -20,65 +20,135 @@ db_conn = connections.Connection(
 output = {}
 table = 'employee'
 
-
 @app.route("/", methods=['GET', 'POST'])
 def home():
     return render_template('AddEmp.html')
 
 
-@app.route("/about", methods=['POST'])
+@app.route("/about", methods=['GET', 'POST'])
 def about():
     return render_template('www.intellipaat.com')
 
+#below
+@app.route("/getemp", methods=['GET', 'POST'])
+def getemp():
+    return render_template('GetEmp.html')
 
-@app.route("/addemp", methods=['POST'])
-def AddEmp():
+def show_image(bucket):
+    s3_client = boto3.client('s3')
+
     emp_id = request.form['emp_id']
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    pri_skill = request.form['pri_skill']
-    location = request.form['location']
-    emp_image_file = request.files['emp_image_file']
-
-    insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s)"
-    cursor = db_conn.cursor()
-
-    if emp_image_file.filename == "":
-        return "Please select a file"
 
     try:
+        for item in s3_client.list_objects(Bucket=bucket)['Contents']:
+            presigned_url=s3_client.generate_presigned_url('get_object',Params={'Bucket':bucket, 'Key':item['Key']},ExpiresIn=100)
+            if emp_id in item['Key']:
+                public_urls=''+presigned_url
+    except Exception as e:
+        return render_template('IdNotFound.html')
+    return public_urls
 
-        cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location))
-        db_conn.commit()
-        emp_name = "" + first_name + " " + last_name
-        # Uplaod image file in S3 #
-        emp_image_file_name_in_s3 = "emp-id-" + str(emp_id) + "_image_file"
-        s3 = boto3.resource('s3')
+
+
+@app.route("/apply", methods=['GET', 'POST'])
+def apply():
+    return render_template('ApplyLeave.html')
+
+@app.route("/gotoviewallleave", methods=['GET', 'POST'])
+def gotoviewallleave():
+    return render_template('ViewApplyLeave.html')
+
+@app.route("/gotoapproveleave", methods=['GET', 'POST'])
+def gotoapproveleave():
+    return render_template('ApproveLeave.html')
+
+@app.route("/addemp", methods=['GET','POST'])
+def AddEmp():
+    if request.method=='POST':
+
+        emp_id = request.form['emp_id']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        pri_skill = request.form['pri_skill']
+        location = request.form['location']
+        emp_image_file = request.files['emp_image_file']
+        leave_start_date=0000-00-00
+        leave_end_date=0000-00-00
+        leave_reason='none'
+        leave_status='none'
+        job_title = request.form['job_title']
+        gender=request.form['gender']
+        date_of_hired=request.form['date_of_hired']
+        salary=request.form['salary']
+
+        insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor = db_conn.cursor()
+
+        if emp_image_file.filename == "":
+            return "Please select a file"
 
         try:
-            print("Data inserted in MySQL RDS... uploading image to S3...")
-            s3.Bucket(custombucket).put_object(Key=emp_image_file_name_in_s3, Body=emp_image_file)
-            bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
-            s3_location = (bucket_location['LocationConstraint'])
 
-            if s3_location is None:
-                s3_location = ''
-            else:
-                s3_location = '-' + s3_location
+            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,job_title,gender,date_of_hired,salary))
+            db_conn.commit()
+            emp_name = "" + first_name + " " + last_name
+            # Uplaod image file in S3 #
+            emp_image_file_name_in_s3 = "emp-id-" + str(emp_id) + "_image_file.jpg"
+            s3 = boto3.resource('s3')
 
-            object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                s3_location,
-                custombucket,
-                emp_image_file_name_in_s3)
+            try:
+                print("Data inserted in MySQL RDS... uploading image to S3...")
+                s3.Bucket(custombucket).put_object(Key=emp_image_file_name_in_s3, Body=emp_image_file)
+                bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
+                s3_location = (bucket_location['LocationConstraint'])
+ 
+                if s3_location is None:
+                   s3_location = ''
+                else:
+                   s3_location = '-' + s3_location
 
+                object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                   s3_location,
+                   custombucket,
+                   emp_image_file_name_in_s3)
+
+            except Exception as e:
+               return str(e)
         except Exception as e:
             return str(e)
+        finally:
+            cursor.close()
 
-    finally:
-        cursor.close()
+        print("all modification done...")
+        return render_template('AddEmpOutput.html', name=emp_name)
+    else:
+        return render_template('GetEmp.html', name=emp_name)
 
-    print("all modification done...")
-    return render_template('AddEmpOutput.html', name=emp_name)
+  
+   # ffname=[record[0] for record in records]
+   # llname=[record[1] for record in records]
+   
+
+
+#below
+@app.route("/fetchdata", methods=['GET', 'POST'])
+def FetchData():
+    if request.method =='POST':
+       try:
+            eid = request.form['emp_id']
+            cursor = db_conn.cursor()
+            fetch_sql = "Select emp_id, first_name, last_name, pri_skill, location from employee where emp_id=%s"
+            cursor.execute(fetch_sql,(eid))
+            emp=cursor.fetchall()
+            db_conn.commit()
+            (emp_id, first_name, last_name, pri_skill, location)=emp[0]
+            image_url=show_image(custombucket)
+           
+            return render_template('GetEmpOutput.html',id=emp_id,fname=first_name,lname=last_name,interest=pri_skill,location=location,image_url=image_url)
+       except Exception as e:
+            return render_template('IdNotFound.html')
+    else:
+        return render_template('AddEmp.html',fetchdata=fetchdata)
 
 #below
 @app.route("/applyleave", methods=['GET', 'POST'])
@@ -112,7 +182,6 @@ def ViewLeave():
     except Exception as e:
       return render_template('IdNotFound.html')
 
-
 #below
 @app.route("/approveleave", methods=['GET', 'POST'])
 def ApproveLeave():
@@ -128,6 +197,21 @@ def ApproveLeave():
       cursor.execute(approve_leave,(lestatus,eid))
       db_conn.commit()
       return render_template('ApproveLeave.html',first_name=approve_va)
+    except Exception as e:
+      return render_template('IdNotFound.html')
+
+#Foo
+@app.route("/calculatePayroll", methods=['GET', 'POST'])
+def calculatePayroll():
+    try:
+      view_leave_emp_id = request.form['view_leave_emp_id']
+      view_leave = "Select emp_id, first_name, last_name, leave_start_date, leave_end_date, leave_reason, leave_status from employee where emp_id=%s"
+      cursor = db_conn.cursor()
+      cursor.execute(view_leave,(view_leave_emp_id))
+      view_records = cursor.fetchall()
+      db_conn.commit()
+      (emp_id, first_name, last_name, leave_start_date, leave_end_date, leave_reason, leave_status)=view_records[0]
+      return render_template('ViewApplyLeave.html', emp_id=emp_id, first_name=first_name,last_name=last_name,leave_start_date=leave_start_date, leave_end_date=leave_end_date, leave_reason=leave_reason, leave_status=leave_status)
     except Exception as e:
       return render_template('IdNotFound.html')
 
