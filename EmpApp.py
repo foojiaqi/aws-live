@@ -79,9 +79,8 @@ def AddEmp():
         job_title = request.form['job_title']
         gender=request.form['gender']
         date_of_hired=request.form['date_of_hired']
-        salary=request.form['salary']
 
-        insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s)"
         cursor = db_conn.cursor()
 
         if emp_image_file.filename == "":
