@@ -80,9 +80,9 @@ def AddEmp():
         gender=request.form['gender']        
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
-        hourly_wage = ''
-        hours_worked = ''
-        monthly_pay = ''
+        hourly_wage = '1'
+        hours_worked = '1'
+        monthly_pay = '1'
         emp_image_file = request.files['emp_image_file']        
 
 
