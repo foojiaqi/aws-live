@@ -79,8 +79,8 @@ def AddEmp():
         gender=request.form['gender']
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
-        hourly_wage= 0
-        hours_worked= 0
+        hourly_wage='0'
+        hours_worked='0'
         monthly_pay='0'
 
         insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
