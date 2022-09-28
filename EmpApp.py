@@ -228,7 +228,7 @@ def Payroll():
       view_records = cursor.fetchall()
       db_conn.commit()
       (emp_id, first_name, last_name, hourly_wage)=view_records[0]
-      return render_template('Payroll.html', emp_id=emp_id, first_name=first_name,last_name=last_name,hourly_wage=hourly_wage)
+      return render_template('ViewPayroll.html', emp_id=emp_id, first_name=first_name,last_name=last_name,hourly_wage=hourly_wage)
     except Exception as e:
       return render_template('IdNotFound.html')
 
