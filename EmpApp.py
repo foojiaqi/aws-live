@@ -74,7 +74,7 @@ def gotopayroll():
 
 @app.route("/gotoaddemp", methods=['GET', 'POST'])
 def gotoaddemp():
-    return render_template('AddEmp.html')      
+    return render_template('AddEmp.html')       
 
 @app.route("/addemp", methods=['GET','POST'])
 def AddEmp():
@@ -178,7 +178,7 @@ def ApplyLeave():
       cursor = db_conn.cursor()
       cursor.execute(updateLeave,(start_date,end_date,reason,'pending',eid))
       db_conn.commit()
-      return render_template('AddEmp.html')
+      return render_template('ApplyLeave.html')
     except Exception as e:
       return render_template('IdNotFound.html')
 
