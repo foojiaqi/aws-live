@@ -1,322 +1,193 @@
-from flask import Flask, render_template, request
-from pymysql import connections
-import os
-import boto3
-import datetime
-from config import *
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add Employee Information</title>
+</head>
+<style>
+	body {
+		background-color: white;
+	}
 
-app = Flask(__name__)
+	form {
+		text-align: center;
+	}
 
-bucket = custombucket 
-region = customregion
+	table {
+		margin-left: auto;
+		margin-right: auto;
+	}
 
-db_conn = connections.Connection(
-    host=customhost,
-    port=3306,
-    user=customuser,
-    password=custompass,
-    db=customdb
+	body {
+		font-family: 'Montserrat', sans-serif;
+		line-height: 1.6;
+		margin: 0;
+		min-height: 100vh;
+		background-color: rgb(222, 190, 148);
+	}
 
-)
-output = {}
-table = 'employee'
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
 
-@app.route("/", methods=['GET', 'POST'])
-def home():
-    return render_template('AddEmp.html')
+	.content {
+		width: 850px;
+		margin: auto;
+		margin-bottom: 350px; /* Same height as footer */
+		padding: 100px 0;
+	}
 
-
-@app.route("/about", methods=['GET', 'POST'])
-def about():
-    return render_template('www.intellipaat.com')
-
-#below
-@app.route("/getemp", methods=['GET', 'POST'])
-def getemp():
-    return render_template('GetEmp.html')
-
-def show_image(bucket):
-    s3_client = boto3.client('s3')
-
-    emp_id = request.form['emp_id']
-
-    try:
-        for item in s3_client.list_objects(Bucket=bucket)['Contents']:
-            presigned_url=s3_client.generate_presigned_url('get_object',Params={'Bucket':bucket, 'Key':item['Key']},ExpiresIn=100)
-            if emp_id in item['Key']:
-                public_urls=''+presigned_url
-    except Exception as e:
-        return render_template('IdNotFound.html')
-    return public_urls
-
+	.fixed_footer {
+		width: 100%;
+		height: 200px;
+		background: #111;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		z-index: -100;
+	}
 
 
+	.employeeid {
+		font-size: 32px;
+	}
+
+	.footer_class {
+		color: #696969;
+		column-count: 2;
+		column-gap: 50px;
+		font-size: 1em;
+		font-weight: 300;
+	}
+
+	form {
+		text-align: center;
+	}
+
+	p {
+		text-align: center;
+	}
+
+	h2,
+	h3,
+	a {
+		color: #34495e;
+	}
+
+	a {
+		text-decoration: none;
+	}
 
 
-@app.route("/apply", methods=['GET', 'POST'])
-def apply():
-    return render_template('ApplyLeave.html')
 
-@app.route("/gotoviewallleave", methods=['GET', 'POST'])
-def gotoviewallleave():
-    return render_template('ViewApplyLeave.html')
+	.logo {
+		margin: 0;
+		font-size: 1.45em;
+	}
 
-@app.route("/gotoapproveleave", methods=['GET', 'POST'])
-def gotoapproveleave():
-    return render_template('ApproveLeave.html')
+	.main-nav {
+		margin-top: 5px;
+	}
 
-@app.route("/gotoupdatepayroll", methods=['GET', 'POST'])
-def gotoupdatepayroll():
-    return render_template('UpdatePayroll.html')
+		.logo a,
+		.main-nav a {
+			padding: 10px 15px;
+			text-transform: uppercase;
+			text-align: center;
+			display: block;
+		}
 
-@app.route("/gotoattendance", methods=['GET', 'POST'])
-def gotopayroll():
-    return render_template('AttendanceCheckIn.html')        
+		.main-nav a {
+			color: #34495e;
+			font-size: .99em;
+		}
 
-@app.route("/gotoaddemp", methods=['GET', 'POST'])
-def gotoaddemp():
-    return render_template('AddEmp.html')       
+			.main-nav a:hover {
+				color: #718daa;
+			}
 
-@app.route("/addemp", methods=['GET','POST'])
-def AddEmp():
-    if request.method=='POST':
+	.header {
+		padding-top: .5em;
+		padding-bottom: .5em;
+		border: 1px solid #a2a2a2;
+		background-color: #f4f4f4;
+		-webkit-box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
+		-moz-box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
+		box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
 
-        emp_id = request.form['emp_id']
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        pri_skill = request.form['pri_skill']
-        location = request.form['location']
-        leave_start_date=0000-00-00
-        leave_end_date=0000-00-00
-        leave_reason='none'
-        leave_status='none'
-        gender=request.form['gender']     
-        job_title = request.form['job_title']
-        date_of_hired=request.form['date_of_hired']
-        hourly_wage='0'
-        hours_worked= '0'
-        monthly_pay = '0'
-        emp_image_file = request.files['emp_image_file']       
+	@media (min-width: 769px) {
+		.header,
+		.main-nav {
+			display: flex;
+		}
 
- 
-        insert_sql = "INSERT INTO employee VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        cursor = db_conn.cursor()
+		.header {
+			flex-direction: column;
+			align-items: center;
+			width: 80%;
+			margin: 0 auto;
+			max-width: 1150px;
+		}
+	}
 
-        if emp_image_file.filename == "":
-            return "Please select a file"
+	@media (min-width: 1025px) {
+		.header {
+			flex-direction: row;
+			justify-content: space-between;
+		}
+	}
+</style>
+<center>
+	<font color="black" size="3" style="font-family: avenir">
 
-        try: 
-            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,gender,job_title,date_of_hired,hourly_wage,hours_worked,monthly_pay))
-            db_conn.commit()
-            emp_name = "" + first_name + " " + last_name
-            # Upload image file in S3 #
-            emp_image_file_name_in_s3 = "emp-id-" + str(emp_id) + "_image_file"
-            s3 = boto3.resource('s3')
+		<header class="header">
+			<ul class="main-nav">
+				<li><a href="/gotoaddemp">Add Employee</a></li>
+				<li><a href="/getemp">Get Employee</a></li>
+				<li><a href="/apply">Apply Leave</a></li>
+				<li><a href="/gotoviewallleave">View Leave Status</a></li>
+				<li><a href="/gotoapproveleave">Approve Leave</a></li>
+				<li><a href="/gotoupdatepayroll">Update Payroll</a></li>
+				<li><a href="/gotopayroll">Update Payroll</a></li>
+				<li><a href="/gotoattendance">Attendance</a></li>
+			</ul>
+		</header>
 
-            try:
-                print("Data inserted in MySQL RDS... uploading image to S3...")
-                s3.Bucket(custombucket).put_object(Key=emp_image_file_name_in_s3, Body=emp_image_file)
-                bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
-                s3_location = (bucket_location['LocationConstraint'])
+		<h1 style="color: red">Employee Database</h1>
 
-                if s3_location is None:
-                    s3_location = ''
-                else:
-                    s3_location = '-' + s3_location
+		<body bgcolor="white">
 
-                object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                    s3_location,
-                    custombucket,
-                    emp_image_file_name_in_s3)
+			<form action="/addemp" autocomplete="on" method="POST" enctype="multipart/form-data">
 
-            except Exception as e:
-               return str(e)
-        except Exception as e:
-            return str(e)
-        finally:
-            cursor.close()
+				Employee ID:<br> <input style="height:25px;font-size:14pt; color:grey;border-radius: 30px;" type="number" name="emp_id" autofocus size="40"><br><br>
 
-        print("all modification done...")
-        return render_template('AddEmpOutput.html', name=emp_name)
-    else:
-        return render_template('GetEmp.html', name=emp_name)
+				First Name:<br> <input style="height:25px;font-size:14pt;color:grey;border-radius: 30px;" type="text" name="first_name"><br><br>
 
-  
-   # ffname=[record[0] for record in records]
-   # llname=[record[1] for record in records]
-   
+				Last Name:<br> <input style="height:25px;font-size:14pt;color:grey;border-radius: 30px;" type="text" name="last_name"><br><br>
 
+				Primary Skills:<br> <input style="height:25px;font-size:14pt;color:grey;border-radius: 30px;" type="text" name="pri_skill"><br><br>
 
-#below
-@app.route("/fetchdata", methods=['GET', 'POST'])
-def FetchData():
-    if request.method =='POST':
-       try:
-            eid = request.form['emp_id']
-            cursor = db_conn.cursor()
-            fetch_sql = "Select emp_id, first_name, last_name, pri_skill, location from employee where emp_id=%s"
-            cursor.execute(fetch_sql,(eid))
-            emp=cursor.fetchall()
-            db_conn.commit()
-            (emp_id, first_name, last_name, pri_skill, location)=emp[0]
-            image_url=show_image(custombucket)
-           
-            return render_template('GetEmpOutput.html',id=emp_id,fname=first_name,lname=last_name,interest=pri_skill,location=location,image_url=image_url)
-       except Exception as e:
-            return render_template('IdNotFound.html')
-    else:
-        return render_template('AddEmp.html',fetchdata=fetchdata)
+				Location:<br> <input style="height:25px;font-size:14pt;color:grey;border-radius: 30px;" type="text" name="location"><br><br>
 
-#below
-@app.route("/applyleave", methods=['GET', 'POST'])
-def ApplyLeave():
-    try:
-      start_date = request.form['leave_start_date']
-      end_date = request.form['leave_end_date']
-      reason = request.form['leave_reason']
-      eid = request.form['emp_id']
-      updateLeave = "update employee set leave_start_date = %s, leave_end_date = %s, leave_reason =%s, leave_status=%s  where emp_id=%s"
-      cursor = db_conn.cursor()
-      cursor.execute(updateLeave,(start_date,end_date,reason,'pending',eid))
-      db_conn.commit()
-      return render_template('ApplyLeave.html')
-    except Exception as e:
-      return render_template('IdNotFound.html')
+				Job Title:<br> <input style="height:25px;font-size:14pt;color:grey;border-radius: 30px;" type="text" name="job_title"><br><br>
 
+				Gender:<br> <input style="height:25px;font-size:14pt;color:grey;border-radius: 30px;" type="text" name="gender"><br><br>
+				
+				<label for="dateOfHired">Date of Hired:</label><br>
+				<input style="height:25px;font-size:14pt;color:grey;border-radius: 30px;" type="date" id="dateOfHired" name="date_of_hired"><br><br>
+				
+				Image: <input type=file name="emp_image_file" style="height:25px;font-size:14pt;color:grey;"> <br><br>
 
-#below
-@app.route("/viewleave", methods=['GET', 'POST'])
-def ViewLeave():
-    try:
-      view_leave_emp_id = request.form['view_leave_emp_id']
-      view_leave = "Select emp_id, first_name, last_name, leave_start_date, leave_end_date, leave_reason, leave_status from employee where emp_id=%s"
-      cursor = db_conn.cursor()
-      cursor.execute(view_leave,(view_leave_emp_id))
-      view_records = cursor.fetchall()
-      db_conn.commit()
-      (emp_id, first_name, last_name, leave_start_date, leave_end_date, leave_reason, leave_status)=view_records[0]
-      return render_template('ViewApplyLeave.html', emp_id=emp_id, first_name=first_name,last_name=last_name,leave_start_date=leave_start_date, leave_end_date=leave_end_date, leave_reason=leave_reason, leave_status=leave_status)
-    except Exception as e:
-      return render_template('IdNotFound.html')
+				<button type="submit" style="background: orangered; height: 45px; width: 200px; color: white; size: 5; border-radius: 30px;font:oblique;">UPDATE DATABASE</button>
 
+			</form>
+		</body>
 
-#below
-@app.route("/approveleave", methods=['GET', 'POST'])
-def ApproveLeave():
-    try:
-      eid = request.form['emp_id']
-      approve_va=request.form['action']
-      if approve_va=='Approve':
-         lestatus='Approve'
-      else:
-         lestatus='Reject'   
-      approve_leave = "Update employee set leave_status=%s where emp_id=%s"
-      cursor = db_conn.cursor()
-      cursor.execute(approve_leave,(lestatus,eid))
-      db_conn.commit()
-      return render_template('ApproveLeave.html',first_name=approve_va)
-    except Exception as e:
-      return render_template('IdNotFound.html')
-
-#Foo   
-@app.route("/payroll", methods=['GET', 'POST'])
-def Payroll():
-    try:
-      payroll_emp_id = request.form['payroll_emp_id']
-      payroll = "Select emp_id, first_name, last_name, hourly_wage, from employee where emp_id=%s"
-      cursor = db_conn.cursor()
-      cursor.execute(payroll,(payroll_emp_id))
-      view_records = cursor.fetchall()
-      db_conn.commit()
-      (emp_id, first_name, last_name, hourly_wage)=view_records[0]
-      return render_template('ViewPayroll.html', emp_id=emp_id, first_name=first_name,last_name=last_name,hourly_wage=hourly_wage)
-    except Exception as e:
-      return render_template('IdNotFound.html')
-
-#Foo
-@app.route("/updatePayroll", methods=['GET', 'POST'])
-def UpdatePayroll():
-    try:
-      hourly_wage = request.form['hourly_wage']
-      eid = request.form['emp_id']
-      updateHourly = "update employee set hourly_wage = %s where emp_id=%s"
-      cursor = db_conn.cursor()
-      cursor.execute(updateHourly,(hourly_wage,eid))
-      db_conn.commit()
-      return render_template('UpdatePayroll.html')
-    except Exception as e:
-      return render_template('IdNotFound.html')
-
-@app.route("/checkIn", methods=['POST', 'GET'])
-def CheckIn():
-    emp_id = request.form['emp_id']
-
-    checkInSQL = "UPDATE employee SET check_in = (%(check_in)s) WHERE emp_id = %(emp_id)s"
-
-    cursor = db_conn.cursor()
-
-    checkInTime = datetime.datetime.now()
-    checkInTime_formatted = checkInTime.strftime("%Y-%m-%d %H:%M:%S")
-    print(checkInTime_formatted)
-
-    try:
-        cursor.execute(checkInSQL, {'check_in' : checkInTime_formatted, 'emp_id':int(emp_id)})
-        db_conn.commit()
-        print("Check-in data updated")
-
-    except Exception as e:
-        return str(e)
-
-    finally:
-        cursor.close()
-
-    return render_template("AttendanceDisplayTime.html", date = datetime.datetime.now(),
-     checkIn = checkInTime_formatted)
-
-@app.route("/checkOut", methods=['GET', 'POST'])
-def CheckOut():
-    emp_id = request.form['emp_id']
-
-    selectCheckIn = "SELECT check_in FROM employee WHERE emp_id = %(emp_id)s"
-    insertData = "INSERT INTO attendance VALUES (%s, %s, %s)"
-
-    cursor = db_conn.cursor()
-
-    checkInTime = datetime.datetime.now()
-    checkInTime_formatted = checkInTime.strftime("%Y-%m-%d %H:%M:%S")
-    print(checkInTime_formatted)
-
-    try:
-        cursor.execute(selectCheckIn, {'emp_id' : int(emp_id)})
-        checkInTime = cursor.fetchall()
-        for row in checkInTime:
-            checkInTime_formatted = row
-            print(checkInTime_formatted[0])
-        checkOutTime = datetime.datetime.now()
-        checkInTime = datetime.datetime.strptime(checkInTime_formatted[0], '%Y-%m-%d %H:%M:%S')
-
-        checkOutTime_formatted = checkOutTime.strptime("%Y-%m-%d %H:%M:%S")
-
-        try:
-            cursor.execute(insertData, (emp_id, checkInTime_formatted[0], checkOutTime_formatted))
-            db_conn.commit()
-            print("The check in and out data is inserted")
-        except Exception as e:
-            return str(e)
-
-    except Exception as e:
-        return str(e)
-
-    finally:
-        cursor.close()
-
-    return render_template("AttendanceDisplayTime.html", date=datetime.datetime.now(), checkOut = checkOutTime_formatted,
-    checkIn = checkInTime_formatted)
-
-
-@app.route("/backHome", methods=['GET','POST'])
-def Home():
-    return render_template('')      
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=True)
+	</font>
+</center>
+</html>
