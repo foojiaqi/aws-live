@@ -76,8 +76,8 @@ def AddEmp():
         leave_end_date=0000-00-00
         leave_reason='none'
         leave_status='none'
-        job_title = request.form['job_title']
         gender=request.form['gender']
+        job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
         hourly_wage= 0
         hours_worked= 0
@@ -91,7 +91,7 @@ def AddEmp():
 
         try:
 
-            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,job_title,gender,date_of_hired,hourly_wage,hours_worked,monthly_pay))
+            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,gender,job_title,date_of_hired,hourly_wage,hours_worked,monthly_pay))
             db_conn.commit()
             emp_name = "" + first_name + " " + last_name
             # Upload image file in S3 #
