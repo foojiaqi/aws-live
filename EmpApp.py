@@ -65,16 +65,16 @@ def gotoapproveleave():
     return render_template('ApproveLeave.html')
 
 @app.route("/gotoupdatepayroll", methods=['GET', 'POST'])
-def apply():
+def gotoupdatepayroll():
     return render_template('UpdatePayroll.html')
 
 @app.route("/gotopayroll", methods=['GET', 'POST'])
-def apply():
+def gotopayroll():
     return render_template('Payroll.html')        
 
 @app.route("/gotoaddemp", methods=['GET', 'POST'])
-def apply():
-    return render_template('AddEmp.html')       
+def gotoaddemp():
+    return render_template('AddEmp.html')      
 
 @app.route("/addemp", methods=['GET','POST'])
 def AddEmp():
