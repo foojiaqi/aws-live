@@ -80,13 +80,13 @@ def AddEmp():
         gender=request.form['gender']        
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
-        hourly_wage = '1'
-        # hours_worked = '1'
+        # hourly_wage='1'
+        # hours_worked= '1'
         # monthly_pay = '1'
         emp_image_file = request.files['emp_image_file']        
 
 # %s,%s,%s
-        insert_sql = "INSERT INTO employee VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        insert_sql = "INSERT INTO employee VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         cursor = db_conn.cursor()
 
         if emp_image_file.filename == "":
@@ -94,10 +94,10 @@ def AddEmp():
 
         try:
 # hourly_wage,hours_worked,monthly_pay
-            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,gender,job_title,date_of_hired,hourly_wage))
+            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,gender,job_title,date_of_hired))
             db_conn.commit()
             emp_name = "" + first_name + " " + last_name
-            # Uplaod image file in S3 #
+            # Upload image file in S3 #
             emp_image_file_name_in_s3 = "emp-id-" + str(emp_id) + "_image_file"
             s3 = boto3.resource('s3')
 
@@ -106,21 +106,16 @@ def AddEmp():
                 s3.Bucket(custombucket).put_object(Key=emp_image_file_name_in_s3, Body=emp_image_file)
                 bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
                 s3_location = (bucket_location['LocationConstraint'])
- 
+
                 if s3_location is None:
-                   s3_location = ''
+                    s3_location = ''
                 else:
-                   s3_location = '-' + s3_location
+                    s3_location = '-' + s3_location
 
-                object_url = "https://{0}.s3.amazonaws.com/{1}".format(
-                   custombucket,
-                #    s3_location,
-                   emp_image_file_name_in_s3)
-
-                # object_url = "https://{0}.s3.amazonaws.com/{1}/{2}".format(
-                #    custombucket,
-                #    s3_location,
-                #    emp_image_file_name_in_s3)
+                object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                    s3_location,
+                    custombucket,
+                    emp_image_file_name_in_s3)
 
             except Exception as e:
                return str(e)
