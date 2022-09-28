@@ -77,13 +77,13 @@ def AddEmp():
         leave_end_date=0000-00-00
         leave_reason='none'
         leave_status='none'
-        gender= request.form['gender']        
+        gender='ss'     
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
         hourly_wage='0'
-        hours_worked='0'
-        monthly_pay ='0'
-        emp_image_file = request.files['emp_image_file']        
+        hours_worked= '0'
+        monthly_pay = '0'
+        emp_image_file = request.files['emp_image_file']       
 
  
         insert_sql = "INSERT INTO employee VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
