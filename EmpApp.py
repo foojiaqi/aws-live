@@ -64,6 +64,18 @@ def gotoviewallleave():
 def gotoapproveleave():
     return render_template('ApproveLeave.html')
 
+@app.route("/gotoupdatepayroll", methods=['GET', 'POST'])
+def apply():
+    return render_template('UpdatePayroll.html')
+
+@app.route("/gotopayroll", methods=['GET', 'POST'])
+def apply():
+    return render_template('Payroll.html')        
+
+@app.route("/gotoaddemp", methods=['GET', 'POST'])
+def apply():
+    return render_template('AddEmp.html')       
+
 @app.route("/addemp", methods=['GET','POST'])
 def AddEmp():
     if request.method=='POST':
@@ -77,7 +89,7 @@ def AddEmp():
         leave_end_date=0000-00-00
         leave_reason='none'
         leave_status='none'
-        gender=request.form['gender']        
+        gender=request.form['gender']     
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
         hourly_wage='0'
