@@ -109,10 +109,15 @@ def AddEmp():
                 else:
                    s3_location = '-' + s3_location
 
-                object_url = "https://s3.console.aws.amazon.com/{1}/{2}".format(
-                   s3_location,
+                object_url = "https://{0}.s3.amazonaws.com/{1}".format(
                    custombucket,
+                #    s3_location,
                    emp_image_file_name_in_s3)
+
+                # object_url = "https://{0}.s3.amazonaws.com/{1}/{2}".format(
+                #    custombucket,
+                #    s3_location,
+                #    emp_image_file_name_in_s3)
 
             except Exception as e:
                return str(e)
@@ -205,75 +210,3 @@ def ApproveLeave():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
-    
-    
-@app.route("/checkIn", methods=['POST', 'GET'])
-def CheckIn():
-    emp_id = request.form['emp_id']
-
-    checkInSQL = "UPDATE employee SET check_in = (%(check_in)s) WHERE emp_id = %(emp_id)s"
-
-    cursor = db_conn.cursor()
-
-    checkInTime = datetime.datetime.now()
-    checkInTime_formatted = checkInTime.strftime("%Y-%m-%d %H:%M:%S")
-    print(checkInTime_formatted)
-
-    try:
-        cursor.execute(checkInSQL, {'check_in' : checkInTime_formatted, 'emp_id':int(emp_id)})
-        db_conn.commit()
-        print("Check-in data updated")
-
-    except Exception as e:
-        return str(e)
-
-    finally:
-        cursor.close()
-
-    return render_template("AttendanceDisplayTime.html", date = datetime.datetime.now(),
-     checkIn = checkInTime_formatted)
-
-@app.route("/checkOut", methods=['GET', 'POST'])
-def CheckOut():
-    emp_id = request.form['emp_id']
-
-    selectCheckIn = "SELECT check_in FROM employee WHERE emp_id = %(emp_id)s"
-    insertData = "INSERT INTO attendance VALUES (%s, %s, %s)"
-
-    cursor = db_conn.cursor()
-
-    checkInTime = datetime.datetime.now()
-    checkInTime_formatted = checkInTime.strftime("%Y-%m-%d %H:%M:%S")
-    print(checkInTime_formatted)
-
-    try:
-        cursor.execute(selectCheckIn, {'emp_id' : int(emp_id)})
-        checkInTime = cursor.fetchall()
-        for row in checkInTime:
-            checkInTime_formatted = row
-            print(checkInTime_formatted[0])
-        checkOutTime = datetime.datetime.now()
-        checkInTime = datetime.datetime.strptime(checkInTime_formatted[0], '%Y-%m-%d %H:%M:%S')
-
-        checkOutTime_formatted = checkOutTime.strptime("%Y-%m-%d %H:%M:%S")
-
-        try:
-            cursor.execute(insertData, (emp_id, checkInTime_formatted[0], checkOutTime_formatted))
-            db_conn.commit()
-            print("The check in and out data is inserted")
-        except Exception as e:
-            return str(e)
-
-    except Exception as e:
-        return str(e)
-
-    finally:
-        cursor.close()
-
-    return render_template("AttendanceDisplayTime.html", date=datetime.datetime.now(), checkOut = checkOutTime_formatted,
-    checkIn = checkInTime_formatted)
-
-
-@app.route("/backHome", methods=['GET','POST'])
-def Home():
-    return render_template('')
