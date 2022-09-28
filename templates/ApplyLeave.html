@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Apply Leave</title>
@@ -165,6 +165,7 @@
                     <li><a href="/gotoapproveleave">Approve Leave</a></li>
                     <li><a href="/gotoupdatepayroll">Update Payroll</a></li>
                     <li><a href="/gotopayroll">Payroll</a></li>
+                    <li><a href="/gotoattendance">Attendance</a></li>
                 </ul>
             </header>
 
@@ -172,9 +173,9 @@
             <form action="/applyleave" autocomplete="on" method="POST">
                 <h2 style="color: grey">Apply Leave</h2>
                 Employee ID:<br> <input style="height: 25px; font-size: 14pt; border-radius: 30px;" type="number" name="emp_id" autofocus size="40"><br><br>
-                <label for="startdate">Start date:</label>
+                <label for="startdate" >Start date:</label>
+                &nbsp&nbsp&nbsp
                 <input type="date" id="startdate" name="leave_start_date">
-                &nbsp&nbsp&nbsp&nbsp&nbsp
                 <label for="enddate">End date:</label>
                 <input type="date" id="enddate" name="leave_end_date"><br><br>
                 Reason :<br> <textarea class="input" rows="4" input style="height:100px;font-size:14pt; color:grey;" type="text" name="leave_reason" autofocus size="40"></textarea><br><br>

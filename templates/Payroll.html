@@ -161,6 +161,7 @@
 				<li><a href="/gotoapproveleave">Approve Leave</a></li>
 				<li><a href="/gotoupdatepayroll">Update Payroll</a></li>
 				<li><a href="/gotopayroll">Payroll</a></li>
+				<li><a href="/gotoattendance">Attendance</a></li>
 			</ul>
 		</header>
     
@@ -175,20 +176,30 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Hourly Wage(RM)</th>
-                    <th>Hours worked(h)</th>
-                    <th>Monthly Pay</th>
+
                 </tr>
                 <tr height="100px">
                     <td width="25px">{{emp_id}}</td>
                     <td>{{first_name}}</td>
                     <td>{{last_name}}</td>
                     <td>{{hourly_wage}}</td>
-                    <td><input style="height:25px;font-size:14pt; color:grey;border-radius: 30px;" type="number" name="hours_worked" autofocus size="40"><br><br></td>
-                    <td>{{monthly_pay}}</td>
                 </tr>
             </table>
             <br /><br />
-            <button type="submit" formaction="/payroll" style="background: orangered; height: 45px; width: 200px;     color: white; font: oblique; border-radius: 30px; ">Calculate Payroll</button><br><br>
+            <button type="submit" formaction="/payroll" style="background: orangered; height: 45px; width: 200px;     color: white; font: oblique; border-radius: 30px; ">Get Info</button><br><br>
+
+            <table border="3px">
+              <tr>
+                <th>Hours worked(h)</th>
+                <th>Monthly Pay</th>
+              </tr>
+              <tr height="100px">
+                  <td><input style="height:25px;font-size:14pt; color:grey;border-radius: 30px;" type="number" name="hours_worked" autofocus size="40"><br><br></td>
+                  <td>{{monthly_pay}}</td>
+              </tr>
+          </table>
+            <br /><br />
+            <button type="submit" formaction="/calculate" style="background: orangered; height: 45px; width: 200px;     color: white; font: oblique; border-radius: 30px; ">Calculate Payroll</button><br><br>
         </form>
     </body>
 </center>
