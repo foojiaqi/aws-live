@@ -80,13 +80,13 @@ def AddEmp():
         gender=request.form['gender']        
         job_title = request.form['job_title']
         date_of_hired=request.form['date_of_hired']
-        # hourly_wage = '1'
+        hourly_wage = '1'
         # hours_worked = '1'
         # monthly_pay = '1'
         emp_image_file = request.files['emp_image_file']        
 
 # %s,%s,%s
-        insert_sql = "INSERT INTO employee VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        insert_sql = "INSERT INTO employee VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         cursor = db_conn.cursor()
 
         if emp_image_file.filename == "":
@@ -94,7 +94,7 @@ def AddEmp():
 
         try:
 # hourly_wage,hours_worked,monthly_pay
-            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,gender,job_title,date_of_hired))
+            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,gender,job_title,date_of_hired,hourly_wage))
             db_conn.commit()
             emp_name = "" + first_name + " " + last_name
             # Uplaod image file in S3 #
