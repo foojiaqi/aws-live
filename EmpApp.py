@@ -74,7 +74,7 @@ def gotopayroll():
     return render_template('Payroll.html')
 
 @app.route("/gotoattendance", methods=['GET', 'POST'])
-def gotopayroll():
+def gotoattendance():
     return render_template('AttendanceCheckIn.html')        
 
 @app.route("/gotoaddemp", methods=['GET', 'POST'])
