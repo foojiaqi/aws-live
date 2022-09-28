@@ -222,13 +222,13 @@ def ApproveLeave():
 def Payroll():
     try:
       payroll_emp_id = request.form['payroll_emp_id']
-      payroll = "Select emp_id, first_name, last_name, hourly_wage, hours_worked, monthly_pay from employee where emp_id=%s"
+      payroll = "Select emp_id, first_name, last_name, hourly_wage, from employee where emp_id=%s"
       cursor = db_conn.cursor()
       cursor.execute(payroll,(payroll_emp_id))
       view_records = cursor.fetchall()
       db_conn.commit()
-      (emp_id, first_name, last_name, hourly_wage, hours_worked, monthly_pay)=view_records[0]
-      return render_template('Payroll.html', emp_id=emp_id, first_name=first_name,last_name=last_name,hourly_wage=hourly_wage, leave_end_date=leave_end_date, hours_worked=hours_worked, monthly_pay=monthly_pay)
+      (emp_id, first_name, last_name, hourly_wage)=view_records[0]
+      return render_template('Payroll.html', emp_id=emp_id, first_name=first_name,last_name=last_name,hourly_wage=hourly_wage)
     except Exception as e:
       return render_template('IdNotFound.html')
 
