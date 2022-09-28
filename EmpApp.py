@@ -88,10 +88,10 @@ def AddEmp():
 
         try:
 
-            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,job_title,gender,date_of_hired,salary))
+            cursor.execute(insert_sql, (emp_id, first_name, last_name, pri_skill, location,leave_start_date,leave_end_date,leave_reason,leave_status,job_title,gender,date_of_hired))
             db_conn.commit()
             emp_name = "" + first_name + " " + last_name
-            # Uplaod image file in S3 #
+            # Upload image file in S3 #
             emp_image_file_name_in_s3 = "emp-id-" + str(emp_id) + "_image_file.jpg"
             s3 = boto3.resource('s3')
 
